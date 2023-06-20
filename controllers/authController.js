@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require("bcryptjs");
-const passport = require("passport-local");
-
+const jwt = require('jsonwebtoken');
 
 module.exports.register = (req, res) => {
     const { username, email, password, isAdmin } = req.body;
@@ -38,55 +37,53 @@ module.exports.register = (req, res) => {
     }
 };
 
-module.exports.loginValidation = (passport) => {
-    passport.use(
-      new passport.Strategy({ usernameField: "email" }, (email, password, done) => {
-        // Check if email exists
-        User.findOne({ email: email })
-            .then((user) => {
-                if (!user) {
-                    console.log("Incorrect email");
-                    return done();
-                }
-                // Check if password is correct
-                bcrypt.compare(password, user.password, (error, isMatch) => {
-                    if (error) throw error;
-                    if (isMatch) {
-                        return done(null, user);
-                    } else {
-                        console.log("Wrong Password");
-                        return done();
-                    }
-                });
-            })
-            .catch((error) => console.log(error));
-        })
-    );
-    passport.serializeUser((user, done) => {
-        done(null, user.id);
-    });
-    passport.deserializeUser((id, done) => {
-        User.findById(id, (error, user) => {
-            done(error, user);
-        });
-    });
-};
-
 module.exports.login = (req, res) => {
     const { email, password } = req.body;
-    //Required
-    if (!email || !password) {
-        console.log("Please fill in all the fields");
-        res.render("login", {
-            email,
-            password,
-        });
-    } else {
-        passport.authenticate("local", {
-            successRedirect: "/dashboard",
-            failureRedirect: "/login",
-            failureFlash: true,
-        })(req, res);
+  
+    User.findOne({ email })
+        .then((user) => {
+            // Check if email exists
+            if (!user) {
+                return res.send("Email not found");
+            }
+    
+            // Check if password is correct
+            bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) {
+                    throw err;
+                }
+                if (isMatch) {
+                    // Create and sign a JWT
+                    const token = jwt.sign({ userId: user._id }, 'your-secret-key', {
+                    expiresIn: '1h' // Token expiration time
+                    });
+        
+                    res.json({ token });
+                } else {
+                    res.send("Invalid password");
+                }
+            });
+        })
+        .catch((err) => console.log(err));
+};
+
+module.exports.authenticate= (req, res, next) => {
+    const token = req.header('Authorization');
+  
+    // Check if token exists - would only exist if user is logged in
+    if (!token) {
+        return res.send("Access denied. Token not provided");
+    }
+  
+    try {
+        // Verify and decode the token
+        const decoded = jwt.verify(token, 'your-secret-key');
+        req.userId = decoded.userId; // Attach user ID to the request object
+        next();
+    } catch (err) {
+        res.send("Invalid token");
     }
 };
+
+
 
