@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const authRoutes = require('./routes/authRoutes');
+const routes = require('./routes');
 
 require("dotenv").config();
 const { MONGODB_USERNAME, MONGODB_PASSWORD } = process.env;
@@ -20,10 +20,12 @@ mongoose.connection.on('error', console.error.bind(console, 'Connection Error'))
 mongoose.connection.once('open', () => console.log("Connected to DB"));
 
 // Middleware
-app.use(express.json()); // used for post/put requests to process data
+app.use(express.json()); 
 
-// Routes
-app.use('/auth', authRoutes);
+// Mount the routes
+app.use('/', routes);
+
+
 
 
 
