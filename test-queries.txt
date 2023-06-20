@@ -1,5 +1,6 @@
 non-admin-token: 
-admin-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDkxOTc4MGMzMDgxZWJhZDQ3ZTcxZjIiLCJpYXQiOjE2ODcyNjMzMjIsImV4cCI6MTY4NzI2NjkyMn0.KxoL4ei85DgFH1Uc54qoAUBv7__xcbFPx8fV47FYtWM
+admin-token:
+user-id: 
 
 
 register | POST | localhost:3000/register
@@ -25,6 +26,7 @@ login | POST | localhost:3000/login
 
 create product - admin | POST | localhost:3000/product
     Authorization: {admin-token}
+    User: {current-user-id}
     {
         "name": "product 1",
         "description": "this is a sample product",
@@ -40,6 +42,7 @@ retrieve single product | GET | localhost:3000/products/:productId
 
 update product - admin | PUT | localhost:3000/products/:productId 
     Authorization: {admin-token}
+    User: {current-user-id}
     {
         "name": "product 1",
         "description": "modified the description of the product",
@@ -48,11 +51,14 @@ update product - admin | PUT | localhost:3000/products/:productId
 
 archive product - admin | PATCH | localhost:3000/products/:productId
     Authorization: {admin-token}
+    User: {current-user-id}
 
 create order - non-admin | POST | localhost:3000/users/order 
     Authorization: {non-admin-token}
+    User: {current-user-id}
 
 retrieve user order - non-admin | GET | localhost:3000/users/my-orders 
     Authorization: {non-admin-token}
+    User: {current-user-id}
 
 retrieve all orders - admin | GET | localhost:3000/users/orders

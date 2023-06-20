@@ -2,7 +2,7 @@ const Product = require('../models/Product');
 
 // Admin users only
 module.exports.createProduct = (req, res) => {
-    const userId = req.userId; 
+    const userId = req.header('User'); 
 
     User.findById(userId)
     .then((user) => {
@@ -60,7 +60,7 @@ module.exports.getSingleProduct = (req, res) => {
 
 // Admin users only
 module.exports.updateProduct = (req, res) => {
-    const userId = req.userId; 
+    const userId = req.header('User'); 
     
     User.findById(userId)
     .then((user) => {
@@ -92,7 +92,7 @@ module.exports.updateProduct = (req, res) => {
 
 // Admin users only
 module.exports.archiveProduct = (req, res) => {
-    const userId = req.userId; 
+    const userId = req.header('User'); 
     
     User.findById(userId)
     .then((user) => {

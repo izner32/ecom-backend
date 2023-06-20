@@ -58,7 +58,7 @@ module.exports.login = (req, res) => {
                     expiresIn: '1h' // Token expiration time
                     });
         
-                    res.json({ token });
+                    res.json({ userId: user._id, token: token });
                 } else {
                     res.send("Invalid password");
                 }

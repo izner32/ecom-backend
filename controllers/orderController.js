@@ -2,7 +2,7 @@ const Order = require('../models/Order');
 
 // Non-admin users only
 module.exports.createOrder = (req, res) => {
-    const userId = req.userId; 
+    const userId = req.header('User'); 
     
     User.findById(userId)
     .then((user) => {
@@ -31,7 +31,7 @@ module.exports.createOrder = (req, res) => {
 
 // Non-admin users only
 module.exports.getUserOrders = (req, res) => {
-    const userId = req.userId; 
+    const userId = req.header('User'); 
     
     User.findById(userId)
     .then((user) => {
@@ -51,7 +51,7 @@ module.exports.getUserOrders = (req, res) => {
 
 // Admin users only
 module.exports.getAllOrders = (req, res) => {
-    const userId = req.userId; 
+    const userId = req.header('User');  
     
     User.findById(userId)
     .then((user) => {
