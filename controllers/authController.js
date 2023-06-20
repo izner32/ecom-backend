@@ -1,10 +1,11 @@
 const User = require('../models/User');
 const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
 
 module.exports.register = (req, res) => {
     const { username, email, password, isAdmin } = req.body;
 
-    if (!username || !email || !password) {
+    if ( !email || !password) {
         return res.send("Fill all empty fields");
     } else {
         User.findOne({ email: email })

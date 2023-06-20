@@ -1,0 +1,28 @@
+register | localhost:3000/login
+    {
+        "email": "renzcarillo1@gmail.com",
+        "password": "Renz1234"
+    }
+
+login | localhost:3000/login
+    {
+        "email": "renzcarillo1@gmail.com",
+        "password": "Renz1234"
+    }
+
+create product | localhost:3000/users/order
+    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDkxOGQ4MDU4ZjJhNTE4MDg5MDc1ZTEiLCJpYXQiOjE2ODcyNjA2MTMsImV4cCI6MTY4NzI2NDIxM30.BlVwB2jfZ5Y5IxPqFxSbDKYRRxLDVdSeHWxjjTf7TX8
+    {
+        "name": "product 1",
+        "description": "this is a sample product",
+        "price": 1,
+        "isActive": true
+    }
+
+view product 
+
+
+create order 
+
+
+view all orders 

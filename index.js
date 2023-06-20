@@ -1,3 +1,9 @@
+/*
+    TODO
+    - delete all singular routes and merge them all into single route file
+
+*/
+
 const express = require('express');
 const mongoose = require('mongoose');
 
