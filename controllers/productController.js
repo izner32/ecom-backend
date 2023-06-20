@@ -1,8 +1,9 @@
 const Product = require('../models/Product');
+const User = require('../models/User');
 
 // Admin users only
 module.exports.createProduct = (req, res) => {
-    const userId = req.header('User'); 
+    const userId = req.header('User');
 
     User.findById(userId)
     .then((user) => {
@@ -25,7 +26,7 @@ module.exports.createProduct = (req, res) => {
       })
     .catch((err) => {
         // Error occurred while querying the user
-        res.status(500).json({ error: 'Failed to query user' });
+        res.status(500).json({ error: `Failed to query user ${userId}` });
     });
 };
 

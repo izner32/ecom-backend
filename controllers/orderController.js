@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const User = require('../models/User');
 
 // Non-admin users only
 module.exports.createOrder = (req, res) => {
