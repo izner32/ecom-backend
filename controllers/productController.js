@@ -2,27 +2,31 @@ const Product = require('../models/Product');
 
 // Admin users only
 module.exports.createProduct = (req, res) => {
-    const isAdmin = req.isAdmin;
+    const userId = req.userId; 
+
+    User.findById(userId)
+    .then((user) => {
+        if (user && user.isAdmin) {    
+            const { name, price, description } = req.body;
     
-    if (!isAdmin) {
-        return res.status(403).json({ error: 'Access denied. Admin privilege required' });
-    }
-
-    // Extract the product information from the request body
-    const { name, price, description } = req.body;
-
-    // Create a new product instance
-    const newProduct = new Product({
-        name,
-        price,
-        description,
+            const newProduct = new Product({
+                name,
+                price,
+                description,
+            });
+  
+            newProduct
+            .save()
+            .then((product) => res.json({ success: true, product }))
+            .catch((err) => res.status(500).json({ error: 'Failed to create product' }));
+        } else {
+            res.status(403).json({ error: 'Unauthorized. Only admins can create products.' });
+        }
+      })
+    .catch((err) => {
+        // Error occurred while querying the user
+        res.status(500).json({ error: 'Failed to query user' });
     });
-
-    // Save the product to the database
-    newProduct
-    .save()
-    .then((product) => res.json({ success: true, product }))
-    .catch((err) => res.status(500).json({ error: 'Failed to create product' }));
 };
 
 // Every users
@@ -56,45 +60,59 @@ module.exports.getSingleProduct = (req, res) => {
 
 // Admin users only
 module.exports.updateProduct = (req, res) => {
-    const isAdmin = req.isAdmin;
+    const userId = req.userId; 
     
-    if (!isAdmin) {
-        return res.status(403).json({ error: 'Access denied. Admin privilege required' });
-    }
+    User.findById(userId)
+    .then((user) => {
+        if (user && user.isAdmin) { 
+            const productId = req.params.productId;
+            const { name, price, description } = req.body;
 
-    const productId = req.params.productId;
-    const { name, price, description } = req.body;
-
-    Product.findByIdAndUpdate(
-        productId,
-        { name, price, description },
-        { new: true }
-    )
-    .then((product) => {
-        if (!product) {
-            return res.status(404).json({ success: false, error: 'Product not found' });
+            Product.findByIdAndUpdate(
+                productId,
+                { name, price, description },
+                { new: true }
+            )
+            .then((product) => {
+                if (!product) {
+                    return res.status(404).json({ success: false, error: 'Product not found' });
+                }
+                res.json({ success: true, product });
+                })
+            .catch((err) => res.status(500).json({ error: 'Failed to update product' }));
+        } else {
+            res.status(403).json({ error: 'Unauthorized. Only admins can create products.' });
         }
-        res.json({ success: true, product });
-        })
-    .catch((err) => res.status(500).json({ error: 'Failed to update product' }));
+    })
+    .catch((err) => {
+        // Error occurred while querying the user
+        res.status(500).json({ error: 'Failed to query user' });
+    });
 };
 
 // Admin users only
 module.exports.archiveProduct = (req, res) => {
-    const isAdmin = req.isAdmin;
+    const userId = req.userId; 
     
-    if (!isAdmin) {
-      return res.status(403).json({ error: 'Access denied. Admin privilege required' });
-    }
-  
-    const productId = req.params.productId;
-  
-    Product.findByIdAndUpdate(productId, { isActive: false }, { new: true })
-      .then((product) => {
-        if (!product) {
-          return res.status(404).json({ success: false, error: 'Product not found' });
+    User.findById(userId)
+    .then((user) => {
+        if (user && user.isAdmin) { 
+            const productId = req.params.productId;
+        
+            Product.findByIdAndUpdate(productId, { isActive: false }, { new: true })
+            .then((product) => {
+                if (!product) {
+                    return res.status(404).json({ success: false, error: 'Product not found' });
+                }
+                res.json({ success: true, product });
+            })
+            .catch((err) => res.status(500).json({ error: 'Failed to archive product' }));
+        } else {
+            res.status(403).json({ error: 'Unauthorized. Only admins can create products.' });
         }
-        res.json({ success: true, product });
-      })
-      .catch((err) => res.status(500).json({ error: 'Failed to archive product' }));
+    })
+    .catch((err) => {
+        // Error occurred while querying the user
+        res.status(500).json({ error: 'Failed to query user' });
+    });
 };

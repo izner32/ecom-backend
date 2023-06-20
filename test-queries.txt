@@ -1,17 +1,30 @@
-register | localhost:3000/login
+non-admin-token: 
+admin-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDkxOTc4MGMzMDgxZWJhZDQ3ZTcxZjIiLCJpYXQiOjE2ODcyNjMzMjIsImV4cCI6MTY4NzI2NjkyMn0.KxoL4ei85DgFH1Uc54qoAUBv7__xcbFPx8fV47FYtWM
+
+
+register | POST | localhost:3000/register
     {
-        "email": "renzcarillo1@gmail.com",
+        "email": "renzcarillo2@gmail.com",
+        "password": "Renz1234"
+    }
+    {
+        "email": "admin",
+        "password": "Renz1234",
+        "isAdmin": true
+    }
+
+login | POST | localhost:3000/login
+    {
+        "email": "renzcarillo2@gmail.com",
+        "password": "Renz1234"
+    }
+    {
+        "email": "admin",
         "password": "Renz1234"
     }
 
-login | localhost:3000/login
-    {
-        "email": "renzcarillo1@gmail.com",
-        "password": "Renz1234"
-    }
-
-create product | localhost:3000/users/order
-    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDkxOGQ4MDU4ZjJhNTE4MDg5MDc1ZTEiLCJpYXQiOjE2ODcyNjA2MTMsImV4cCI6MTY4NzI2NDIxM30.BlVwB2jfZ5Y5IxPqFxSbDKYRRxLDVdSeHWxjjTf7TX8
+create product - admin | POST | localhost:3000/product
+    Authorization: {admin-token}
     {
         "name": "product 1",
         "description": "this is a sample product",
@@ -19,10 +32,27 @@ create product | localhost:3000/users/order
         "isActive": true
     }
 
-view product 
+retrieve all products | GET | localhost:3000/products
 
+retrieve all active products | GET | localhost:3000/products/active
 
-create order 
+retrieve single product | GET | localhost:3000/products/:productId 
 
+update product - admin | PUT | localhost:3000/products/:productId 
+    Authorization: {admin-token}
+    {
+        "name": "product 1",
+        "description": "modified the description of the product",
+        "price": 1,
+    }
 
-view all orders 
+archive product - admin | PATCH | localhost:3000/products/:productId
+    Authorization: {admin-token}
+
+create order - non-admin | POST | localhost:3000/users/order 
+    Authorization: {non-admin-token}
+
+retrieve user order - non-admin | GET | localhost:3000/users/my-orders 
+    Authorization: {non-admin-token}
+
+retrieve all orders - admin | GET | localhost:3000/users/orders

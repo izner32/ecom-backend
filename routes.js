@@ -15,9 +15,9 @@ router.post('/register', register);
 router.post('/login', login);
 
 // Orders
-router.post('/order', authenticate, createOrder);
-router.get('/orders', authenticate,  getAllOrders);
-router.get('/my-orders', authenticate, getUserOrders);
+router.post('/users/order', authenticate, createOrder);
+router.get('/users/orders', authenticate,  getAllOrders);
+router.get('/users/my-orders', authenticate, getUserOrders);
 
 // Products
 router.post('/product', authenticate, createProduct);
